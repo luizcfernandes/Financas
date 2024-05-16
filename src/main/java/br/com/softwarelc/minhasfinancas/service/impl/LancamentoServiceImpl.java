@@ -3,6 +3,7 @@ package br.com.softwarelc.minhasfinancas.service.impl;
 import java.math.BigDecimal;
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 
 import org.springframework.data.domain.Example;
 import org.springframework.data.domain.ExampleMatcher;
@@ -65,7 +66,7 @@ public class LancamentoServiceImpl implements LancamentoService{
     }
     @Override
     public void validar(Lancamento lancamento) {
-        // TODO Auto-generated method stub
+
         if(lancamento.getDescricao() == null || lancamento.getDescricao().trim().equals("") ){
             throw new RegraNegocioException("Informe uam Descrição válida");
         }
@@ -90,5 +91,16 @@ public class LancamentoServiceImpl implements LancamentoService{
             throw new RegraNegocioException("Informe um Tipo válido");
         }
     }
-    
+   // /*
+    @Override
+    public Optional<Lancamento> obterPorId(Long id) {
+       
+        return repository.findById(id);
+    }
+   // */
+    @Override
+    public BigDecimal obterSaldoPorUsuario(Long id) {
+        return null;
+    }
+   
 }

@@ -25,11 +25,11 @@ import jakarta.persistence.ManyToOne;
 
 
 @Entity
+@Table(name="lancamento",schema="public")
 @Builder
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-@Table(name="lancamento",schema="financas")
 public class Lancamento {
     @Id
     @Column(name="id")

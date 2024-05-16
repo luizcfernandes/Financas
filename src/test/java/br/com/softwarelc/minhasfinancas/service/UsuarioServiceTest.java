@@ -113,6 +113,21 @@ public class UsuarioServiceTest {
         Assertions.assertThat(exception).isInstanceOf(ErroAutenticacao.class).hasMessage("Usuário não encontrado!");
 
     }
+    @Test
+    public void deveObterUsuarioPorId(){
+        //cenario
+        Long id = 1l;
+        String email = "email@email.com";
+        Usuario usuario = criarUsuaario();
+        Mockito.when(repository.findByEmail(email)).thenReturn(Optional.of(usuario));
+
+        //acao
+        Optional<Usuario> result = service.obterPorId(id);
+
+
+        //verficiaçao
+        Assertions.assertThat(result).isNotEmpty();
+    }
 
     @Test
     public void deveLancarErroQuandoSenhaNaoBater(){

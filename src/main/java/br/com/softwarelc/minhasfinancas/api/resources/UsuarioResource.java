@@ -1,11 +1,9 @@
 package br.com.softwarelc.minhasfinancas.api.resources;
 
 import java.io.UnsupportedEncodingException;
-import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 
-import javax.crypto.spec.SecretKeySpec;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -19,16 +17,20 @@ import br.com.softwarelc.minhasfinancas.exceptions.ErroAutenticacao;
 import br.com.softwarelc.minhasfinancas.exceptions.RegraNegocioException;
 import br.com.softwarelc.minhasfinancas.model.entity.Usuario;
 import br.com.softwarelc.minhasfinancas.service.UsuarioService;
+import lombok.RequiredArgsConstructor;
 
+@SuppressWarnings({ "rawtypes", "unchecked" })
 @RestController
 @RequestMapping("/api/usuarios")
+@RequiredArgsConstructor
 public class UsuarioResource {
-    private UsuarioService service;
-    public UsuarioResource(UsuarioService service ){
+    
+    private final UsuarioService service;
+   
+    /*public UsuarioResource(UsuarioService service ){
         this.service = service;
-    }
-
-    @SuppressWarnings({ "rawtypes", "unchecked" })
+    }*/
+   
     @PostMapping
     public ResponseEntity<String> salvar(@RequestBody UsuarioDTO dto) throws UnsupportedEncodingException, NoSuchAlgorithmException{
 
@@ -44,7 +46,7 @@ public class UsuarioResource {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
-
+   
     @PostMapping("/autenticar")
     public ResponseEntity autenticar(@RequestBody UsuarioDTO dto) throws UnsupportedEncodingException, NoSuchAlgorithmException{
         try {
