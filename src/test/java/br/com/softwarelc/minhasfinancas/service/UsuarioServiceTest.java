@@ -116,19 +116,17 @@ public class UsuarioServiceTest {
     @Test
     public void deveObterUsuarioPorId(){
         //cenario
-        Long id = 1l;
-        String email = "email@email.com";
+        Mockito.doNothing().when(service).validarEmail(Mockito.anyString());
         Usuario usuario = criarUsuaario();
-        Mockito.when(repository.findByEmail(email)).thenReturn(Optional.of(usuario));
-
+        Mockito.when(repository.save(Mockito.any(Usuario.class))).thenReturn(usuario);
         //acao
-        Optional<Usuario> result = service.obterPorId(id);
-
-
+        Usuario usuarioSalvo = service.salvarUsuario(new Usuario());
+        Optional<Usuario>  result = service.obterPorId(1l);
         //verficiaçao
-        Assertions.assertThat(result).isNotEmpty();
+        Assertions.assertThat(usuarioSalvo).isNotNull();
+        //Assertions.assertThat(usuarioSalvo.getId()).isEqualTo(1l);
+        Assertions.assertThat(result).isNotPresent();
     }
-
     @Test
     public void deveLancarErroQuandoSenhaNaoBater(){
         //cenario

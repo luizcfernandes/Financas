@@ -21,12 +21,12 @@ public class UsuarioServiceImpl implements UsuarioService{
     
     @Autowired
     public UsuarioServiceImpl(UsuarioRepository repository) {
+        super();
         this.repository = repository;
     }
 
     @Override
     public Usuario autenticar(String email, String senha) {
-        // TODO Auto-generated method stub
 
         Optional<Usuario> usuario = repository.findByEmail(email);
 
@@ -56,8 +56,7 @@ public class UsuarioServiceImpl implements UsuarioService{
 
     @Override
     public Optional<Usuario> obterPorId(Long id) {
-        // TODO Auto-generated method stub
-        return repository.findById(id);
+         return repository.findById(id);
     }
 
     

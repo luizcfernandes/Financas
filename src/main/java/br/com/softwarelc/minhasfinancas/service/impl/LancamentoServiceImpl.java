@@ -14,6 +14,7 @@ import org.springframework.transaction.annotation.Transactional;
 import br.com.softwarelc.minhasfinancas.exceptions.RegraNegocioException;
 import br.com.softwarelc.minhasfinancas.model.entity.Lancamento;
 import br.com.softwarelc.minhasfinancas.model.enumm.StatusLancamento;
+import br.com.softwarelc.minhasfinancas.model.enumm.TipoLancamento;
 import br.com.softwarelc.minhasfinancas.model.repository.LancamentoRepository;
 import br.com.softwarelc.minhasfinancas.service.LancamentoService;
 
@@ -90,6 +91,10 @@ public class LancamentoServiceImpl implements LancamentoService{
         if(lancamento.getTipo() == null ){
             throw new RegraNegocioException("Informe um Tipo válido");
         }
+
+        if(lancamento.getStatus() == null) {
+            throw new RegraNegocioException("Informe um Status válido");
+        }
     }
    // /*
     @Override
@@ -98,9 +103,20 @@ public class LancamentoServiceImpl implements LancamentoService{
         return repository.findById(id);
     }
    // */
+   ///*
     @Override
+    @Transactional(readOnly = true)
     public BigDecimal obterSaldoPorUsuario(Long id) {
-        return null;
+        BigDecimal receitas = repository.obterSaldoPorTipoLancamentoEUsuario(id,TipoLancamento.RECEITA);
+        BigDecimal despesas = repository.obterSaldoPorTipoLancamentoEUsuario(id,TipoLancamento.DESPESA);
+        if (receitas == null) {
+            receitas = BigDecimal.ZERO;
+        }
+
+        if (despesas == null) {
+            despesas = BigDecimal.ZERO;
+        }
+        return receitas.subtract(despesas);
     }
-   
+    
 }

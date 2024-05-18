@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import br.com.softwarelc.minhasfinancas.api.dto.AtualizaStatusDTO;
 import br.com.softwarelc.minhasfinancas.api.dto.LancamentoDTO;
 import br.com.softwarelc.minhasfinancas.exceptions.RegraNegocioException;
 import br.com.softwarelc.minhasfinancas.model.entity.Lancamento;
@@ -26,7 +27,7 @@ import br.com.softwarelc.minhasfinancas.service.UsuarioService;
 import lombok.RequiredArgsConstructor;
 
 
-//@SuppressWarnings({ "rawtypes", "unchecked" })
+@SuppressWarnings({ "rawtypes", "unchecked" })
 @RestController
 @RequestMapping("/api/lancamentos")
 @RequiredArgsConstructor
@@ -41,11 +42,11 @@ public class LancamentoResource {
     }
     */
     @PostMapping
-    public ResponseEntity<String> salvar(@RequestBody LancamentoDTO dto) {
+    public ResponseEntity salvar(@RequestBody LancamentoDTO dto) {
         try {
             Lancamento entidade = converter(dto);
-            Lancamento entidadeSalva = service.salvar(entidade);
-            return new ResponseEntity(entidadeSalva,HttpStatus.CREATED);
+            entidade = service.salvar(entidade);
+            return new ResponseEntity(entidade,HttpStatus.CREATED);
         }catch(RegraNegocioException e){
             return ResponseEntity.badRequest().body(e.getMessage());
         }
@@ -65,7 +66,26 @@ public class LancamentoResource {
         }).orElseGet(()-> new ResponseEntity("Lançamento não encontrado na base de dados",HttpStatus.BAD_REQUEST));
     }
 
-    @DeleteMapping("{id}")
+    @SuppressWarnings("unused")
+    @PutMapping("{id}/atualiza-status")
+    public ResponseEntity atualizarStatus(@PathVariable("id") Long id,
+            @RequestBody AtualizaStatusDTO dto){
+        return service.obterPorId(id).map( entity -> {
+            try {
+                StatusLancamento statusLancamento = StatusLancamento.valueOf(dto.getStatus()); 
+                if(statusLancamento == null) {
+                    return ResponseEntity.badRequest().body("Status não válido.");
+                } 
+                entity.setStatus(statusLancamento);
+                service.atualizar(entity);
+                return ResponseEntity.ok(entity);
+            } catch(RegraNegocioException e){
+                return ResponseEntity.badRequest().body(e.getMessage());
+            }
+        }).orElseGet(()-> 
+            new ResponseEntity("Lançamento não encontrado na base dados",HttpStatus.BAD_REQUEST));
+    }
+        @DeleteMapping("{id}")
     public ResponseEntity deletar(@PathVariable("id") Long id) {
         return service.obterPorId(id).map(entity -> {
             service.deletar(entity);
@@ -103,6 +123,7 @@ public class LancamentoResource {
                         @RequestParam(value="descricao",required = false) String descricao,
                         @RequestParam(value="mes",required = false) Integer mes,
                         @RequestParam(value="ano",required = false) Integer ano,
+                        @RequestParam(value="tipo",required = false) String tipo,
                         @RequestParam("usuario") Long idUsuario
                         ){
         Lancamento lancamentoFiltro = new Lancamento();
@@ -111,7 +132,7 @@ public class LancamentoResource {
         lancamentoFiltro.setAno(ano);
         
         Optional<Usuario> usuario = usuarioService.obterPorId(idUsuario);
-        if(usuario.isPresent()) {
+        if(!usuario.isPresent()) {
             return ResponseEntity
                         .badRequest()
                         .body("Não foi possivel realizar a consulta. Usuário não encontrado!");

@@ -1,5 +1,7 @@
 package br.com.softwarelc.minhasfinancas.model.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -22,8 +24,8 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 equivale a @Data
 */
-@Builder
 @Data
+@Builder
 @NoArgsConstructor
 @AllArgsConstructor
 public class Usuario {
@@ -39,6 +41,7 @@ public class Usuario {
     private String email;
 
     @Column(name="senha")
+    @JsonIgnore
     private String senha;
     
 }

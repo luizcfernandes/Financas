@@ -1,27 +1,24 @@
 package br.com.softwarelc.minhasfinancas.model.entity;
 
 import java.math.BigDecimal;
-import java.time.LocalDate;
-
-import org.springframework.data.jpa.convert.threeten.Jsr310JpaConverters;
 
 import br.com.softwarelc.minhasfinancas.model.enumm.StatusLancamento;
 import br.com.softwarelc.minhasfinancas.model.enumm.TipoLancamento;
 import jakarta.persistence.Column;
-import jakarta.persistence.Convert;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
 import jakarta.persistence.Table;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 
 @Entity
@@ -52,9 +49,11 @@ public class Lancamento {
     @Column(name="valor")
     private BigDecimal valor;
 
-    @Column(name="data_cadastro")
-    @Convert(converter=Jsr310JpaConverters.LocalDateConverter.class)
-    private LocalDate dataCadastro;
+    
+    //@Column(name="data_cadastro")
+    //@Convert(converter=Jsr310JpaConverters.LocalDateConverter.class)
+    //private Date dataCadastro;
+  
 
     @Column(name="tipo")
     @Enumerated(value=EnumType.STRING)
